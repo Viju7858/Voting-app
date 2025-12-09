@@ -11,17 +11,13 @@ router.post("/signup", async (req, res) => {
     const newUser = new User(data);
     // Save the new user to the database
     const response = await newUser.save();
-    console.log("data saved");
-
     const payload = {
       id: response.id,
     };
 
     const token = generateToken(payload);
-
     res.status(200).json({ response: response, token: token });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -45,21 +41,17 @@ router.post("/login", async (req, res) => {
       id: user.id,
     };
     const token = generateToken(payload);
-
     // resturn token as response
     res.json({ token });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
 // Profile route
-
 router.get("/profile", jwtAuthMiddleware, async (req, res) => {
   try {
     const userData = req.user;
-
     const userId = userData.id;
     const user = await User.findById(userId);
     res.status(200).json(user);
@@ -80,15 +72,11 @@ router.put("/profile/password", jwtAuthMiddleware, async (req, res) => {
     if (!(await user.comparePassword(currentPassword))) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
-
     // Update the user's password
     user.password = newPassword;
     await user.save();
-
-    console.log("Password updated");
     res.status(200).json({ message: "Password Updated" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

@@ -29,11 +29,8 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
     const newCandidate = new Candidate(data);
     // Save the new user to the database
     const response = await newCandidate.save();
-    console.log("data saved");
-
     res.status(200).json({ response: response });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -54,10 +51,8 @@ router.put("/:candidateID", jwtAuthMiddleware, async (req, res) => {
     if (!response) {
       return res.status(404).json({ error: "Candidate not found" });
     }
-    console.log("data update");
     res.status(200).json({ response: response });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -72,10 +67,8 @@ router.delete("/:candidateID", jwtAuthMiddleware, async (req, res) => {
     if (!response) {
       return res.status(404).json({ error: "Candidate not found" });
     }
-    console.log("Candidate deleted");
     res.status(200).json({ response: response });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -87,8 +80,6 @@ router.post("/vote/:candidateID", jwtAuthMiddleware, async (req, res) => {
 
   const candidateID = req.params.candidateID;
   const userId = req.user?.id || req.user?._id;
-  console.log("req.user =", req.user);
-
   try {
     const candidate = await Candidate.findById(candidateID);
 
@@ -99,7 +90,6 @@ router.post("/vote/:candidateID", jwtAuthMiddleware, async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      console.log(user);
       return res.status(404).json({ message: "User not Found" });
     }
     if (user.role === "admin") {
@@ -117,7 +107,6 @@ router.post("/vote/:candidateID", jwtAuthMiddleware, async (req, res) => {
     await user.save();
     res.status(200).json({ message: "Vote cast successfully" });
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -136,7 +125,6 @@ router.get("/vote/count", async (req, res) => {
     });
     return res.status(200).json(voteRecord);
   } catch (error) {
-    console.log(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
