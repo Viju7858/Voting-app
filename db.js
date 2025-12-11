@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
-
+require("dotenv").config();
 
 // Define the mongoDB URL
-const mongoURL = "mongodb://127.0.0.1:27017/hotelsDB";
+const mongoURL = process.env.MONGODB_URL;
 
 // Connect to mongoDB
-mongoose.connect(mongoURL, {
+mongoose
+  .connect(mongoURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  
+
   .then(() => {
     console.log("MongoDB Connected Successfull");
   })
@@ -30,5 +31,3 @@ db.on("error", (error) => {
 db.on("disconnected", () => {
   console.log("Mongoose disconnected to " + mongoURL);
 });
-
-
