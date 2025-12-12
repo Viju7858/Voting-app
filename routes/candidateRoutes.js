@@ -22,7 +22,7 @@ router.post("/", jwtAuthMiddleware, async (req, res) => {
     if (!(await checkAdminRole(req.user.id)))
       return res
         .status(403)
-        .json({ error: "user does  not have admin role 1" });
+        .json({ error: "user does not have admin role" });
 
     const data = req.body; // Assuming the request body contains the cadidate data
     // Create a new user document using the Mongoose model
