@@ -14,11 +14,13 @@ router.post("/signup", async (req, res) => {
     const payload = {
       id: response.id,
     };
+    console.log(response);
 
     const token = generateToken(payload);
     res.status(200).json({ response: response, token: token });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
   }
 });
 
@@ -63,11 +65,17 @@ router.get("/profile", jwtAuthMiddleware, async (req, res) => {
 
 router.put("/profile/password", jwtAuthMiddleware, async (req, res) => {
   try {
-    const userId = req.user; // Extract the id from the token
+    const userId = req.user.id;
+    // Extract the id from the token
     const { currentPassword, newPassword } = req.body; //Extract current and new password from request body
 
     //Find the user by userID
     const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    } else {
+      console.log("yes");
+    }
 
     if (!(await user.comparePassword(currentPassword))) {
       return res.status(401).json({ error: "Invalid username or password" });
@@ -78,6 +86,7 @@ router.put("/profile/password", jwtAuthMiddleware, async (req, res) => {
     res.status(200).json({ message: "Password Updated" });
   } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
   }
 });
 

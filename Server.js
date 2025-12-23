@@ -4,18 +4,27 @@ const db = require("./db");
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
+
+// ⭐⭐⭐ Add CORS here ⭐⭐⭐
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "http://localhost:5173",   // React frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+// ⭐⭐⭐ END ⭐⭐⭐
+
+// Body parser
 app.use(bodyParser.json());
+
 const PORT = process.env.PORT || 3000;
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
-
-// Import the router files
+// Routes
 const userRoutes = require("./routes/userRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 
-// Use the routers
 app.use("/user", userRoutes);
 app.use("/candidate", candidateRoutes);
 
