@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const { jwtAuthMiddleware, generateToken } = require("../jwt");
+const { jwtAuthMiddleware, generateToken } = require("../middlewares/jwt");
 
 // POST route to add a person
 router.post("/signup", async (req, res) => {
@@ -13,7 +13,9 @@ router.post("/signup", async (req, res) => {
     const response = await newUser.save();
     const payload = {
       id: response.id,
+      role: response.role,
     };
+
     console.log(response);
 
     const token = generateToken(payload);
@@ -35,13 +37,17 @@ router.post("/login", async (req, res) => {
 
     // If user does not exist or password does not match, return error
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      console.log(
+        res.status(401).json({ error: "Invalid username or password" })
+      );
     }
 
     // generate Token
     const payload = {
       id: user.id,
+      role: user.role,
     };
+
     const token = generateToken(payload);
     // resturn token as response
     res.json({ token });

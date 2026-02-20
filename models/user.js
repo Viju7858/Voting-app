@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   aadharCardNumber: {
     type: String,
     required: true,
-    unqiue: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -35,10 +35,7 @@ const userSchema = new mongoose.Schema({
     enum: ["voter", "admin"],
     default: "voter",
   },
-  isVoted: {
-    type: Boolean,
-    default: false,
-  },
+  maxVotes: Number,
 });
 
 userSchema.pre("save", async function (next) {
